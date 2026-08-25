@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Produtos Nova Panda</title>
+<style>
+  body { font-family: sans-serif; background: #111; color: #eee; padding: 20px; }
+
+  .percentual-control {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .percentual-control label { font-weight: bold; }
+  .percentual-control input {
+    background: #111;
+    border: 1px solid #444;
+    color: #eee;
+    border-radius: 6px;
+    padding: 8px 10px;
+    width: 100px;
+    font-size: 1em;
+  }
+  .percentual-control span.dica { color: #888; font-size: 0.9em; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { background: #1e1e1e; color: #aaa; border: 1px solid #333; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-size: 0.95em; text-align: left; }
+  .tab .contagem { display: block; font-size: 0.75em; color: #777; margin-top: 2px; }
+  .tab.ativo { background: #2563eb; color: #fff; border-color: #2563eb; }
+  .tab.ativo .contagem { color: #cfe0ff; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .card { background: #1e1e1e; border-radius: 8px; padding: 12px; text-align: center; }
+  .card.indisponivel { opacity: 0.55; }
+  .card img { width: 100%; height: 150px; object-fit: contain; background: #fff; border-radius: 4px; cursor: pointer; transition: transform 0.15s; }
+  .card img:hover { transform: scale(1.03); }
+  .preco { color: #4ade80; font-weight: bold; font-size: 1.1em; margin: 6px 0 2px; }
+  .card.indisponivel .preco { color: #888; }
+  .preco-novo { color: #facc15; font-size: 0.95em; margin: 0 0 6px; min-height: 1.2em; }
+  .status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; }
+  .status.ok { background: #14532d; color: #4ade80; }
+  .status.esgotado { background: #450a0a; color: #f87171; }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+  }
+  .overlay.aberto { display: flex; }
+  .overlay img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+  .overlay .fechar { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 2em; cursor: pointer; }
+</style>
+</head>
+<body>
+  <h1>Produtos Nova Panda</h1>
+
+  <div class="percentual-control">
+    <label for="percentualInput">Adicionar %:</label>
+    <input type="number" id="percentualInput" value="0" step="0.1" oninput="atualizarPrecos()">
+    <span class="dica">informe uma porcentagem pra ver o preço final ao lado do valor original</span>
+  </div>
+
+  <div class="tabs"><button class="tab ativo" onclick="abrirAba(0, this)">Rosh <span class="contagem">51 disp. · 13 esgot.</span></button><button class="tab" onclick="abrirAba(1, this)">Narguiles Completos <span class="contagem">27 disp. · 28 esgot.</span></button><button class="tab" onclick="abrirAba(2, this)">Vasos <span class="contagem">36 disp. · 16 esgot.</span></button></div>
+
+  
+    <div class="painel" id="painel-0" style="">
+      <div class="grid">
+      <div class="card" data-preco="7.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_barro_econo_hg_cores_1_20250924101240_bb157f74814a.jpg" alt="Rosh de Barro Econo HG Cores" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_barro_econo_hg_cores_1_20250924101240_bb157f74814a.jpg')">
+        <h3>Rosh de Barro Econo HG Cores</h3>
+        <p class="preco">R$ 7,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="10.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_free_1_20251020125246_dfcb2c914dcc.png" alt="Rosh Free Hookah" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_free_1_20251020125246_dfcb2c914dcc.png')">
+        <h3>Rosh Free Hookah</h3>
+        <p class="preco">R$ 10,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="23.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_batcha_rainbow_bowl_985_1_f8a1ad56c433c372075f0a4de9139d6d.png" alt="Rosh Batcha Bowl Rainbow Completo com Telinha" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_batcha_rainbow_bowl_985_1_f8a1ad56c433c372075f0a4de9139d6d.png')">
+        <h3>Rosh Batcha Bowl Rainbow Completo com Telinha</h3>
+        <p class="preco">R$ 23,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="9.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_aluminio_judith_993_1_c38d6b96bdef5966aca2f2c6f97ae0fb.png" alt="Rosh de Alumínio Judith" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_aluminio_judith_993_1_c38d6b96bdef5966aca2f2c6f97ae0fb.png')">
+        <h3>Rosh de Alumínio Judith</h3>
+        <p class="preco">R$ 9,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="30.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_seven_tradicional_937_1_73a4ab2d8534dc917803d63810abd7f4.png" alt="Rosh Seven Tradicional" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_seven_tradicional_937_1_73a4ab2d8534dc917803d63810abd7f4.png')">
+        <h3>Rosh Seven Tradicional</h3>
+        <p class="preco">R$ 30,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="18.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_amazon_classic_1_20250924151631_cf3aa8fefb28.jpg" alt="Rosh Amazon Classic" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_amazon_classic_1_20250924151631_cf3aa8fefb28.jpg')">
+        <h3>Rosh Amazon Classic</h3>
+        <p class="preco">R$ 18,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="47.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_seven_premium_941_1_8e0bed6a8a4bf89764ee6ea14e4ee44c.png" alt="Rosh Seven Premium Edition" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_seven_premium_941_1_8e0bed6a8a4bf89764ee6ea14e4ee44c.png')">
+        <h3>Rosh Seven Premium Edition</h3>
+        <p class="preco">R$ 47,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="45.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_seven_gold_949_1_da7c1393cbd74069f465aeb23d5ce216.png" alt="Rosh Seven Gold Edition" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_seven_gold_949_1_da7c1393cbd74069f465aeb23d5ce216.png')">
+        <h3>Rosh Seven Gold Edition</h3>
+        <p class="preco">R$ 45,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="16.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_beta_basic_eco_1_20260123111422_cb5f14c30181.jpg" alt="Rosh Beta Basic Eco" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_beta_basic_eco_1_20260123111422_cb5f14c30181.jpg')">
+        <h3>Rosh Beta Basic Eco</h3>
+        <p class="preco">R$ 16,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="47.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_beta_gold_1561_1_0bab955e738547fc35b75079c8607561.png" alt="Rosh Beta Gold" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_beta_gold_1561_1_0bab955e738547fc35b75079c8607561.png')">
+        <h3>Rosh Beta Gold</h3>
+        <p class="preco">R$ 47,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="20.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_silicone_cuba_de_vidro_1_20260428092542_8dbf30d4bbb6.jpeg" alt="Rosh de Silicone Cuba de Vidro" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_silicone_cuba_de_vidro_1_20260428092542_8dbf30d4bbb6.jpeg')">
+        <h3>Rosh de Silicone Cuba de Vidro</h3>
+        <p class="preco">R$ 20,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_preto_1_20251127172241_23ad4d8c44d4.jpg" alt="Rosh Predator Siberian Uma Década Preto" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_preto_1_20251127172241_23ad4d8c44d4.jpg')">
+        <h3>Rosh Predator Siberian Uma Década Preto</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.25">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_beta_mesclado_1569_1_9a35b75ec27c9823c8106f860e912936.png" alt="Rosh Beta Mesclado" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_beta_mesclado_1569_1_9a35b75ec27c9823c8106f860e912936.png')">
+        <h3>Rosh Beta Mesclado</h3>
+        <p class="preco">R$ 33,25</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="35.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_bowl_1_20251020144255_e9d5ff25330f.png" alt="Rosh Artisan Bowl" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_bowl_1_20251020144255_e9d5ff25330f.png')">
+        <h3>Rosh Artisan Bowl</h3>
+        <p class="preco">R$ 35,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="29.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_triton_deepog_975_1_5054390b9cea1922e25caf8e4b322267.png" alt="Rosh Triton Deepog" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_triton_deepog_975_1_5054390b9cea1922e25caf8e4b322267.png')">
+        <h3>Rosh Triton Deepog</h3>
+        <p class="preco">R$ 29,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_preto_1_20251114144520_a6f76a37d63a.png" alt="Rosh Predator Siberian Skin Preto" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_preto_1_20251114144520_a6f76a37d63a.png')">
+        <h3>Rosh Predator Siberian Skin Preto</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.25">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_flex_by_sakamoto_wave_1_20260424123546_369058f572f4.jpg" alt="Rosh Artisan Flex by Sakamoto - Azul Royal" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_flex_by_sakamoto_wave_1_20260424123546_369058f572f4.jpg')">
+        <h3>Rosh Artisan Flex by Sakamoto - Azul Royal</h3>
+        <p class="preco">R$ 33,25</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_laranja_1_20251127172537_7e2388f0ba59.jpg" alt="Rosh Predator Siberian Uma Década Laranja" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_laranja_1_20251127172537_7e2388f0ba59.jpg')">
+        <h3>Rosh Predator Siberian Uma Década Laranja</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="52.25">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_seven_edio_limitada_copa_do_mundo_2026_1_20260511125658_8b25bd6e8ac5.jpg" alt="Rosh Seven Edição Limitada Copa do Mundo 2026" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_seven_edio_limitada_copa_do_mundo_2026_1_20260511125658_8b25bd6e8ac5.jpg')">
+        <h3>Rosh Seven Edição Limitada Copa do Mundo 2026</h3>
+        <p class="preco">R$ 52,25</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_azul_com_mbar_1_20251114142915_02586d86c922.jpg" alt="Rosh Predator Siberian Skin Azul com Âmbar" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_azul_com_mbar_1_20251114142915_02586d86c922.jpg')">
+        <h3>Rosh Predator Siberian Skin Azul com Âmbar</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_rstico_1_20251114144801_c18e00f820e7.png" alt="Rosh Predator Siberian Skin Rústico" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_rstico_1_20251114144801_c18e00f820e7.png')">
+        <h3>Rosh Predator Siberian Skin Rústico</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.25">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_flex_by_sakamoto_creme_1_20260424123942_0eca416deff7.jpg" alt="Rosh Artisan Flex by Sakamoto - Creme" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_flex_by_sakamoto_creme_1_20260424123942_0eca416deff7.jpg')">
+        <h3>Rosh Artisan Flex by Sakamoto - Creme</h3>
+        <p class="preco">R$ 33,25</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="48.80">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_kit_carvao_rainbow_jumbo_1kg_batcha_bowl_rainbow_2443_1_76e9d48cec7d9044d64372df09795e01.jpg" alt="Kit Carvão Rainbow Jumbo 1kg + Batcha Bowl Rainbow" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_kit_carvao_rainbow_jumbo_1kg_batcha_bowl_rainbow_2443_1_76e9d48cec7d9044d64372df09795e01.jpg')">
+        <h3>Kit Carvão Rainbow Jumbo 1kg + Batcha Bowl Rainbow</h3>
+        <p class="preco">R$ 48,80</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_superman_1_20260623113308_c075fc3ba147.jpeg" alt="Rosh Zeus New - SuperMan" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_superman_1_20260623113308_c075fc3ba147.jpeg')">
+        <h3>Rosh Zeus New - SuperMan</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_azul_turquesa_1_20251114144445_a1030a107797.png" alt="Rosh Predator Siberian Skin Azul Turquesa" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_azul_turquesa_1_20251114144445_a1030a107797.png')">
+        <h3>Rosh Predator Siberian Skin Azul Turquesa</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_black_1_20260623113929_545273c6adba.jpeg" alt="Rosh Zeus New - Black" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_black_1_20260623113929_545273c6adba.jpeg')">
+        <h3>Rosh Zeus New - Black</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_rstico_1_20251127172331_f29902e31253.jpg" alt="Rosh Predator Siberian Uma Década Rústico" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_rstico_1_20251127172331_f29902e31253.jpg')">
+        <h3>Rosh Predator Siberian Uma Década Rústico</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_ocean_1_20260612133727_5f1f2cdc1df4.jpeg" alt="Rosh Predator Siberian Uma Década Ocean" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_ocean_1_20260612133727_5f1f2cdc1df4.jpeg')">
+        <h3>Rosh Predator Siberian Uma Década Ocean</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_azul_mbar_1_20260612133844_05d85ed279f8.jpeg" alt="Rosh Predator Siberian Uma Década Azul Âmbar" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_azul_mbar_1_20260612133844_05d85ed279f8.jpeg')">
+        <h3>Rosh Predator Siberian Uma Década Azul Âmbar</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_lils_1_20260612133524_b675fcc7b115.jpeg" alt="Rosh Predator Siberian Uma Década Lilás" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_lils_1_20260612133524_b675fcc7b115.jpeg')">
+        <h3>Rosh Predator Siberian Uma Década Lilás</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_preto_1_20260805095827_747966085796.jpeg" alt="Rosh Predator Siberian Hunter Preto" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_preto_1_20260805095827_747966085796.jpeg')">
+        <h3>Rosh Predator Siberian Hunter Preto</h3>
+        <p class="preco">R$ 39,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_candys_1_20260612133647_405cfc76d557.jpeg" alt="Rosh Predator Siberian Uma Década Candys" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_candys_1_20260612133647_405cfc76d557.jpeg')">
+        <h3>Rosh Predator Siberian Uma Década Candys</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_azul_csmico_1_20260623123940_7e2582c00f40.jpeg" alt="Rosh Zeus New - Azul Cósmico" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_azul_csmico_1_20260623123940_7e2582c00f40.jpeg')">
+        <h3>Rosh Zeus New - Azul Cósmico</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_verde_agua_white_1_20260623123703_28f064d5bc5e.jpeg" alt="Rosh Zeus New - Verde Agua White" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_verde_agua_white_1_20260623123703_28f064d5bc5e.jpeg')">
+        <h3>Rosh Zeus New - Verde Agua White</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_rosado_1_20260623123453_d5fa5dea4270.jpeg" alt="Rosh Zeus New - Rosado" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_rosado_1_20260623123453_d5fa5dea4270.jpeg')">
+        <h3>Rosh Zeus New - Rosado</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_verde_c_azul_1_20260623114637_0b70e5db1c74.jpeg" alt="Rosh Zeus New - Verde c/ Azul" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_verde_c_azul_1_20260623114637_0b70e5db1c74.jpeg')">
+        <h3>Rosh Zeus New - Verde c/ Azul</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_rosa_c_azul_1_20260623114136_ce1cd122fccb.jpeg" alt="Rosh Zeus New - Rosa c/ Azul" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_rosa_c_azul_1_20260623114136_ce1cd122fccb.jpeg')">
+        <h3>Rosh Zeus New - Rosa c/ Azul</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_skin_avocado_1_20260522085034_7aa3d0d45d48.jpeg" alt="Rosh Predator Skin Avocado" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_skin_avocado_1_20260522085034_7aa3d0d45d48.jpeg')">
+        <h3>Rosh Predator Skin Avocado</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="14.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_silicone_cuba_de_barro_64013_preto_1_20260820124553_62f906c9bf51.jpg" alt="Rosh de Silicone com Cuba de Barro para Narguile" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_silicone_cuba_de_barro_64013_preto_1_20260820124553_62f906c9bf51.jpg')">
+        <h3>Rosh de Silicone com Cuba de Barro para Narguile</h3>
+        <p class="preco">R$ 14,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_rstico_1_20260805100000_a95e7739a9fb.jpeg" alt="Rosh Predator Siberian Hunter Rústico" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_rstico_1_20260805100000_a95e7739a9fb.jpeg')">
+        <h3>Rosh Predator Siberian Hunter Rústico</h3>
+        <p class="preco">R$ 39,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_azul_com_mbar_1_20260805095411_7b1d4692feee.jpeg" alt="Rosh Predator Siberian Hunter Azul com Âmbar" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_azul_com_mbar_1_20260805095411_7b1d4692feee.jpeg')">
+        <h3>Rosh Predator Siberian Hunter Azul com Âmbar</h3>
+        <p class="preco">R$ 39,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="14.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_silicone_64012_preto_1_20260820125124_38aadc67029f.jpg" alt="Rosh de Silicone Phunnel Preto para Narguile" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_de_silicone_64012_preto_1_20260820125124_38aadc67029f.jpg')">
+        <h3>Rosh de Silicone Phunnel Preto para Narguile</h3>
+        <p class="preco">R$ 14,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_ocean_1_20260805100449_65519b152774.jpeg" alt="Rosh Predator Siberian Hunter Ocean" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_ocean_1_20260805100449_65519b152774.jpeg')">
+        <h3>Rosh Predator Siberian Hunter Ocean</h3>
+        <p class="preco">R$ 39,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_azul_turquesa_1_20260805100224_1600edb9d045.jpeg" alt="Rosh Predator Siberian Hunter Azul Turquesa" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_azul_turquesa_1_20260805100224_1600edb9d045.jpeg')">
+        <h3>Rosh Predator Siberian Hunter Azul Turquesa</h3>
+        <p class="preco">R$ 39,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_branco_1_20260805095638_f02d60a14755.jpeg" alt="Rosh Predator Siberian Hunter Branco" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_branco_1_20260805095638_f02d60a14755.jpeg')">
+        <h3>Rosh Predator Siberian Hunter Branco</h3>
+        <p class="preco">R$ 39,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_avocado_1_20260805094913_472943c8906d.jpeg" alt="Rosh Predator Siberian Hunter Avocado" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_hunter_avocado_1_20260805094913_472943c8906d.jpeg')">
+        <h3>Rosh Predator Siberian Hunter Avocado</h3>
+        <p class="preco">R$ 39,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_cpia_rosh_predator_hunter_rosa_c_branco_1_20260805094556_e93a16e5aa3d.jpeg" alt="Rosh Predator Siberian Hunter Rosa C/ Branco" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_cpia_rosh_predator_hunter_rosa_c_branco_1_20260805094556_e93a16e5aa3d.jpeg')">
+        <h3>Rosh Predator Siberian Hunter Rosa C/ Branco</h3>
+        <p class="preco">R$ 39,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_azul_bb_1_20260623125336_7944f7b7978a.jpeg" alt="Rosh Zeus New - Azul BB" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_azul_bb_1_20260623125336_7944f7b7978a.jpeg')">
+        <h3>Rosh Zeus New - Azul BB</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_turquesa_claro_c_vermelho_1_20260623123210_c9b08bcc0eb9.jpeg" alt="Rosh Zeus New - Turquesa Claro c/ Vermelho" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_turquesa_claro_c_vermelho_1_20260623123210_c9b08bcc0eb9.jpeg')">
+        <h3>Rosh Zeus New - Turquesa Claro c/ Vermelho</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="33.92">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_verde_abacate_1_20260623113513_6e639334c370.jpeg" alt="Rosh Zeus New - Verde Abacate" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_zeus_new_verde_abacate_1_20260623113513_6e639334c370.jpeg')">
+        <h3>Rosh Zeus New - Verde Abacate</h3>
+        <p class="preco">R$ 33,92</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_branco_1_20260612133433_7e649a1411a2.jpeg" alt="Rosh Predator Siberian Uma Década Branco" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_branco_1_20260612133433_7e649a1411a2.jpeg')">
+        <h3>Rosh Predator Siberian Uma Década Branco</h3>
+        <p class="preco">R$ 39,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_pigment_1_20260316154237_b675c5c2954a.jpg" alt="Rosh Artisan Prime by Sakamoto - Pigment" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_pigment_1_20260316154237_b675c5c2954a.jpg')">
+        <h3>Rosh Artisan Prime by Sakamoto - Pigment</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_jade_1_20260316154125_5e8188deee5a.jpg" alt="Rosh Artisan Prime by Sakamoto - Jade" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_jade_1_20260316154125_5e8188deee5a.jpg')">
+        <h3>Rosh Artisan Prime by Sakamoto - Jade</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_oasis_1_20260316154204_ea89c76882e3.jpg" alt="Rosh Artisan Prime by Sakamoto - Oasis" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_oasis_1_20260316154204_ea89c76882e3.jpg')">
+        <h3>Rosh Artisan Prime by Sakamoto - Oasis</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_cyan_1_20260316154018_25c40c573c18.jpg" alt="Rosh Artisan Prime by Sakamoto - Cyan" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_cyan_1_20260316154018_25c40c573c18.jpg')">
+        <h3>Rosh Artisan Prime by Sakamoto - Cyan</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_creamy_1_20260316153943_df3585d31c61.jpg" alt="Rosh Artisan Prime by Sakamoto - Creamy" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_prime_by_sakamoto_creamy_1_20260316153943_df3585d31c61.jpg')">
+        <h3>Rosh Artisan Prime by Sakamoto - Creamy</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_lils_1_20251114145116_50fc29dbbe37.png" alt="Rosh Predator Siberian Skin Lilás" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_lils_1_20251114145116_50fc29dbbe37.png')">
+        <h3>Rosh Predator Siberian Skin Lilás</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_cpia_rosh_predator_siberian_uma_dcada_ocean_1_20251127172637_0ea4d14d9a01.jpg" alt="Rosh Predator Siberian Uma Década Ocre Azul Claro" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_cpia_rosh_predator_siberian_uma_dcada_ocean_1_20251127172637_0ea4d14d9a01.jpg')">
+        <h3>Rosh Predator Siberian Uma Década Ocre Azul Claro</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_laranja_com_preto_1_20251114145251_798f79b420c7.jpg" alt="Rosh Predator Siberian Skin Laranja com Preto" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_laranja_com_preto_1_20251114145251_798f79b420c7.jpg')">
+        <h3>Rosh Predator Siberian Skin Laranja com Preto</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_rosa_1_20251127172447_cc36bdcb6461.jpg" alt="Rosh Predator Siberian Uma Década Rosa" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_uma_dcada_rosa_1_20251127172447_cc36bdcb6461.jpg')">
+        <h3>Rosh Predator Siberian Uma Década Rosa</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_rosa_com_preto_1_20251114144043_4890694f27a9.png" alt="Rosh Predator Siberian Skin Rosa com Preto" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_rosa_com_preto_1_20251114144043_4890694f27a9.png')">
+        <h3>Rosh Predator Siberian Skin Rosa com Preto</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_flex_by_sakamoto_vermelho_1_20260424124907_86ec2e4923de.jpg" alt="Rosh Artisan Flex by Sakamoto - Vermelho" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_artisan_flex_by_sakamoto_vermelho_1_20260424124907_86ec2e4923de.jpg')">
+        <h3>Rosh Artisan Flex by Sakamoto - Vermelho</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_beta_black_edition_1_20251105165336_86065c653cc7.jpg" alt="Rosh Beta Black Edition" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_beta_black_edition_1_20251105165336_86065c653cc7.jpg')">
+        <h3>Rosh Beta Black Edition</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_amarelo_com_preto_1_20251114145719_72b7c1a3a0cd.png" alt="Rosh Predator Siberian Skin Amarelo com Preto" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_rosh_predator_siberian_skin_amarelo_com_preto_1_20251114145719_72b7c1a3a0cd.png')">
+        <h3>Rosh Predator Siberian Skin Amarelo com Preto</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      </div>
+    </div>
+    <div class="painel" id="painel-1" style="display:none;">
+      <div class="grid">
+      <div class="card" data-preco="179.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_egipcio_c_case_dubai_ibra_65024_2273_1_7c8402eec0a8d56a6ae799264fe7da7c.jpeg" alt="Narguile Egípcio Dubai Osíris com Case" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_egipcio_c_case_dubai_ibra_65024_2273_1_7c8402eec0a8d56a6ae799264fe7da7c.jpeg')">
+        <h3>Narguile Egípcio Dubai Osíris com Case</h3>
+        <p class="preco">R$ 179,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="159.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_egipcio_inox_dubai_ibra_65025_2277_1_b4a1814558f3dfb3fec4aec7ded00436.jpeg" alt="Narguile Dubai Inox com Bolsa Térmica" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_egipcio_inox_dubai_ibra_65025_2277_1_b4a1814558f3dfb3fec4aec7ded00436.jpeg')">
+        <h3>Narguile Dubai Inox com Bolsa Térmica</h3>
+        <p class="preco">R$ 159,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="179.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_egipcio_c_case_dubai_ibra_65022_2269_1_b126e44f9fa8876e1cd66e110b51abeb.jpeg" alt="Narguile Egípcio Dubai Osíris Prata com Case" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_egipcio_c_case_dubai_ibra_65022_2269_1_b126e44f9fa8876e1cd66e110b51abeb.jpeg')">
+        <h3>Narguile Egípcio Dubai Osíris Prata com Case</h3>
+        <p class="preco">R$ 179,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="150.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_rainbow_mini_277_1_dcc07f81a4e2f4f3d7d9b64c6b52ffc8.png" alt="Narguile Rainbow Mini de Vidro com Maleta Luxo" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_rainbow_mini_277_1_dcc07f81a4e2f4f3d7d9b64c6b52ffc8.png')">
+        <h3>Narguile Rainbow Mini de Vidro com Maleta Luxo</h3>
+        <p class="preco">R$ 150,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="285.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_misha_rebel_com_vaso_1_20260619101118_0146cefdc310.png" alt="Narguile Completo Misha com Vaso e Piteira" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_misha_rebel_com_vaso_1_20260619101118_0146cefdc310.png')">
+        <h3>Narguile Completo Misha com Vaso e Piteira</h3>
+        <p class="preco">R$ 285,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="649.22">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_stem_narguile_mattpear_diamond_ibra_1_20260513162930_773c3d373a1b.jpg" alt="Narguile Mattpear Diamond Completo com Vaso" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_stem_narguile_mattpear_diamond_ibra_1_20260513162930_773c3d373a1b.jpg')">
+        <h3>Narguile Mattpear Diamond Completo com Vaso</h3>
+        <p class="preco">R$ 649,22</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="518.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_himalaia_81040_1_20260814132335_e49a187c9e47.jpg" alt="Narguile Completo Himalaia by LK" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_himalaia_81040_1_20260814132335_e49a187c9e47.jpg')">
+        <h3>Narguile Completo Himalaia by LK</h3>
+        <p class="preco">R$ 518,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="332.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_runner_vermelho_81070_1_20260619110614_61dc0f05b026.png" alt="Narguile Runner Vermelho (Sem Vaso)" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_runner_vermelho_81070_1_20260619110614_61dc0f05b026.png')">
+        <h3>Narguile Runner Vermelho (Sem Vaso)</h3>
+        <p class="preco">R$ 332,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="489.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_zenith_nuts_317_1_870d8e0572ee77b4f4ea9c5921f88201.png" alt="Narguile Completo Zenith Nuts" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_zenith_nuts_317_1_870d8e0572ee77b4f4ea9c5921f88201.png')">
+        <h3>Narguile Completo Zenith Nuts</h3>
+        <p class="preco">R$ 489,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="650.23">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_zeus_zyon_1_20260528141902_7e4f256905bf.jpg" alt="Narguile Completo Zeus Zyon" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_zeus_zyon_1_20260528141902_7e4f256905bf.jpg')">
+        <h3>Narguile Completo Zeus Zyon</h3>
+        <p class="preco">R$ 650,23</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="617.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_pacific_blu_1_20260610114003_5fe6e9783a9c.jpg" alt="Narguile Miid Sultan Colors Completo - Pacific Blue" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_pacific_blu_1_20260610114003_5fe6e9783a9c.jpg')">
+        <h3>Narguile Miid Sultan Colors Completo - Pacific Blue</h3>
+        <p class="preco">R$ 617,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="332.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_runner_azul_81069_1_20260619110552_7d120855ccb6.jpg" alt="Narguile Runner Azul (Sem Vaso)" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_runner_azul_81069_1_20260619110552_7d120855ccb6.jpg')">
+        <h3>Narguile Runner Azul (Sem Vaso)</h3>
+        <p class="preco">R$ 332,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="617.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_purple_plum_1_20260610115534_5f4c263c59c0.jpg" alt="Narguile Miid Sultan Colors Completo - Purple Plum" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_purple_plum_1_20260610115534_5f4c263c59c0.jpg')">
+        <h3>Narguile Miid Sultan Colors Completo - Purple Plum</h3>
+        <p class="preco">R$ 617,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="299.25">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_techno_tiger_1_20260512171010_3c7ccb326d67.png" alt="Narguile Techno Tiger (Somente Stem)" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_techno_tiger_1_20260512171010_3c7ccb326d67.png')">
+        <h3>Narguile Techno Tiger (Somente Stem)</h3>
+        <p class="preco">R$ 299,25</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="332.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_runner_roxo_81071_1_20260619110624_4c73f0c9db43.jpg" alt="Narguile Runner Roxo (Sem Vaso)" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_runner_roxo_81071_1_20260619110624_4c73f0c9db43.jpg')">
+        <h3>Narguile Runner Roxo (Sem Vaso)</h3>
+        <p class="preco">R$ 332,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="332.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_runner_amarelo_81068_1_20260619110605_d9b914aed392.png" alt="Narguile Runner Amarelo (Sem Vaso)" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_runner_amarelo_81068_1_20260619110605_d9b914aed392.png')">
+        <h3>Narguile Runner Amarelo (Sem Vaso)</h3>
+        <p class="preco">R$ 332,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="646.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_wolvermiid_wolverine_completo_1_20260610153029_d3eb2c848d11.jpg" alt="Narguile Miid Sultan Wolvermiid Wolverine Completo" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_wolvermiid_wolverine_completo_1_20260610153029_d3eb2c848d11.jpg')">
+        <h3>Narguile Miid Sultan Wolvermiid Wolverine Completo</h3>
+        <p class="preco">R$ 646,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="617.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_teal_blue_1_20260610120938_634009b35e67.jpg" alt="Narguile Miid Sultan Colors Completo - Teal Blue" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_teal_blue_1_20260610120938_634009b35e67.jpg')">
+        <h3>Narguile Miid Sultan Colors Completo - Teal Blue</h3>
+        <p class="preco">R$ 617,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="617.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_taupe_brown_1_20260610120814_6e20ff6c211c.jpg" alt="Narguile Miid Sultan Colors Completo - Taupe Brown" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_taupe_brown_1_20260610120814_6e20ff6c211c.jpg')">
+        <h3>Narguile Miid Sultan Colors Completo - Taupe Brown</h3>
+        <p class="preco">R$ 617,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="617.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_rose_gold_1_20260610120058_86b6a45acf1b.jpg" alt="Narguile Miid Sultan Colors Completo - Rose Gold" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_rose_gold_1_20260610120058_86b6a45acf1b.jpg')">
+        <h3>Narguile Miid Sultan Colors Completo - Rose Gold</h3>
+        <p class="preco">R$ 617,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="617.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_champagne_1_20260610105420_942612961ced.jpg" alt="Narguile Miid Sultan Colors Completo - Champagne" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_champagne_1_20260610105420_942612961ced.jpg')">
+        <h3>Narguile Miid Sultan Colors Completo - Champagne</h3>
+        <p class="preco">R$ 617,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="490.10">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_zenith_nuts_copa_1_20260609165349_c76102e181ef.jpeg" alt="Narguile Zenith Nuts Brasil Completo Verde e Amarelo" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_zenith_nuts_copa_1_20260609165349_c76102e181ef.jpeg')">
+        <h3>Narguile Zenith Nuts Brasil Completo Verde e Amarelo</h3>
+        <p class="preco">R$ 490,10</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="617.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_satin_red_1_20260610120402_842e13512028.jpg" alt="Narguile Miid Sultan Colors Completo - Satin Red" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_satin_red_1_20260610120402_842e13512028.jpg')">
+        <h3>Narguile Miid Sultan Colors Completo - Satin Red</h3>
+        <p class="preco">R$ 617,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="617.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_midnight_gr_1_20260610112726_7f0340b58d20.jpg" alt="Narguile Miid Sultan Colors Completo - Midnight Green" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_midnight_gr_1_20260610112726_7f0340b58d20.jpg')">
+        <h3>Narguile Miid Sultan Colors Completo - Midnight Green</h3>
+        <p class="preco">R$ 617,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="617.50">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_acid_yello_1_20260610100315_5495adde16b0.jpg" alt="Narguile Miid Sultan Colors Completo - Acid Yellow" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_acid_yello_1_20260610100315_5495adde16b0.jpg')">
+        <h3>Narguile Miid Sultan Colors Completo - Acid Yellow</h3>
+        <p class="preco">R$ 617,50</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="299.25">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_techo_roxo_ibra_1_20260512161716_97026301b3b0.png" alt="Stem Narguile Techno" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_techo_roxo_ibra_1_20260512161716_97026301b3b0.png')">
+        <h3>Stem Narguile Techno</h3>
+        <p class="preco">R$ 299,25</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="350.12">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_mr_baba_cod_mb251_1_20251022122313_15188c210882.png" alt="Narguile Mr Baba Dragon Steel Mb251" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_mr_baba_cod_mb251_1_20251022122313_15188c210882.png')">
+        <h3>Narguile Mr Baba Dragon Steel Mb251</h3>
+        <p class="preco">R$ 350,12</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_conde_dom_hookah_1_20260209095549_4abc4e4d5b27.jpg" alt="Narguile Completo Conde Dom Hookah" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_conde_dom_hookah_1_20260209095549_4abc4e4d5b27.jpg')">
+        <h3>Narguile Completo Conde Dom Hookah</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_joy_lumini_mini_255_1_00e91445ac6143c8caeb035ca4f28a99.png" alt="Narguile Joy Lumini Mini" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_joy_lumini_mini_255_1_00e91445ac6143c8caeb035ca4f28a99.png')">
+        <h3>Narguile Joy Lumini Mini</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_copia_kit_narguile_panda_colmeias_completo_com_vaso_diamond_3439_1_8153bd2336f0ec7482ae9a9402bfca53.jpg" alt="Kit Narguile Panda Love Completo com Vaso Diamond" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_copia_kit_narguile_panda_colmeias_completo_com_vaso_diamond_3439_1_8153bd2336f0ec7482ae9a9402bfca53.jpg')">
+        <h3>Kit Narguile Panda Love Completo com Vaso Diamond</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_panda_ibra_81181_1_20260515160328_26eda22ac835.jpg" alt="Stem Narguile Panda Estampado Love" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_panda_ibra_81181_1_20260515160328_26eda22ac835.jpg')">
+        <h3>Stem Narguile Panda Estampado Love</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_ibra_seven_star_1_20260513160742_5a5f317d828d.png" alt="Narguile Completo Sevan Star" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_ibra_seven_star_1_20260513160742_5a5f317d828d.png')">
+        <h3>Narguile Completo Sevan Star</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_kit_narguile_panda_flechas_completo_com_vaso_diamond_3437_1_d3f88d63984645e67f56efc6d0a251b6.jpg" alt="Kit Narguile Panda Flechas Completo com Vaso Diamond" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_kit_narguile_panda_flechas_completo_com_vaso_diamond_3437_1_d3f88d63984645e67f56efc6d0a251b6.jpg')">
+        <h3>Kit Narguile Panda Flechas Completo com Vaso Diamond</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_kit_narguile_panda_cordas_completo_com_vaso_diamond_3435_1_11ea98ff89aa6354750bf071833d24c4.jpg" alt="Kit Narguile Panda Cordas Completo com Vaso Diamond" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_kit_narguile_panda_cordas_completo_com_vaso_diamond_3435_1_11ea98ff89aa6354750bf071833d24c4.jpg')">
+        <h3>Kit Narguile Panda Cordas Completo com Vaso Diamond</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_cartier_premium_1_20260224122833_0d543ecc3f9c.jpg" alt="Narguile Completo Amazon Future Cartier Premium - Tanzanite Blue Gold" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_cartier_premium_1_20260224122833_0d543ecc3f9c.jpg')">
+        <h3>Narguile Completo Amazon Future Cartier Premium - Tanzanite Blue Gold</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_kit_narguile_dubai_completo_com_vaso_diamond_3433_1_3bbeef25cb5c1a363b2b4244bfe35030.jpg" alt="Kit Narguile Panda Colméias Completo com Vaso Diamond" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_kit_narguile_dubai_completo_com_vaso_diamond_3433_1_3bbeef25cb5c1a363b2b4244bfe35030.jpg')">
+        <h3>Kit Narguile Panda Colméias Completo com Vaso Diamond</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_joy_tattoo_1371_1_49111fb4f741de60c40e6aee94f96e03.png" alt="Narguile Joy Tattoo" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_joy_tattoo_1371_1_49111fb4f741de60c40e6aee94f96e03.png')">
+        <h3>Narguile Joy Tattoo</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_milk_1_20260610121603_12ede8be4862.jpg" alt="Narguile Miid Sultan Milk Ink Completo - Milk" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_colors_completo_milk_1_20260610121603_12ede8be4862.jpg')">
+        <h3>Narguile Miid Sultan Milk Ink Completo - Milk</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_cartier_premium_1_20260224122542_98a35ceb303a.jpg" alt="Narguile Completo Amazon Future Cartier Premium - Pearl White Gold" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_cartier_premium_1_20260224122542_98a35ceb303a.jpg')">
+        <h3>Narguile Completo Amazon Future Cartier Premium - Pearl White Gold</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_titanyum_boticin_1_20260312100214_e2db7baceedf.jpg" alt="Narguile Completo Amazon Future - Titanyum Boticino" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_titanyum_boticin_1_20260312100214_e2db7baceedf.jpg')">
+        <h3>Narguile Completo Amazon Future - Titanyum Boticino</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_purple_boticino_1_20260224120035_62f214757b77.jpg" alt="Narguile Completo Amazon Future - Purple Boticino" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_purple_boticino_1_20260224120035_62f214757b77.jpg')">
+        <h3>Narguile Completo Amazon Future - Purple Boticino</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_rose_boticino_1_20260224115434_6ac0061a88c5.jpg" alt="Narguile Completo Amazon Future - Rose Boticino" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_rose_boticino_1_20260224115434_6ac0061a88c5.jpg')">
+        <h3>Narguile Completo Amazon Future - Rose Boticino</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_pink_boticino_1_20260224115253_c086b12fa73e.jpg" alt="Narguile Completo Amazon Future - Pink Boticino" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_pink_boticino_1_20260224115253_c086b12fa73e.jpg')">
+        <h3>Narguile Completo Amazon Future - Pink Boticino</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_black_onix_1_20260224113749_5b26a5d5e9b6.jpg" alt="Narguile Completo Amazon Future - Black Onix" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_black_onix_1_20260224113749_5b26a5d5e9b6.jpg')">
+        <h3>Narguile Completo Amazon Future - Black Onix</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_blue_onix_1_20260224111611_ba1f5cd565ca.jpg" alt="Narguile Completo Amazon Future - Blue Onix" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_blue_onix_1_20260224111611_ba1f5cd565ca.jpg')">
+        <h3>Narguile Completo Amazon Future - Blue Onix</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_gold_boticino_1_20260224114602_89686b6dce6d.jpg" alt="Narguile Completo Amazon Future - Gold Boticino" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_gold_boticino_1_20260224114602_89686b6dce6d.jpg')">
+        <h3>Narguile Completo Amazon Future - Gold Boticino</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_miidquinn_arlequina_completo_1_20260610132546_7e2bf365eb0a.jpg" alt="Narguile Miid Sultan Miidquinn Arlequina Completo" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_miid_sultan_miidquinn_arlequina_completo_1_20260610132546_7e2bf365eb0a.jpg')">
+        <h3>Narguile Miid Sultan Miidquinn Arlequina Completo</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_gold_redwood_1_20260224114658_cba9ee3fd18c.jpg" alt="Narguile Completo Amazon Future - Gold Redwood" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_gold_redwood_1_20260224114658_cba9ee3fd18c.jpg')">
+        <h3>Narguile Completo Amazon Future - Gold Redwood</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_bronze_pioppo_1_20260224113901_b996201b5978.jpg" alt="Narguile Completo Amazon Future - Bronze Pioppo" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_bronze_pioppo_1_20260224113901_b996201b5978.jpg')">
+        <h3>Narguile Completo Amazon Future - Bronze Pioppo</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_black_boticino_1_20260224113618_82952c313449.jpg" alt="Narguile Completo Amazon Future - Black Boticino" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_completo_amazon_future_black_boticino_1_20260224113618_82952c313449.jpg')">
+        <h3>Narguile Completo Amazon Future - Black Boticino</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_zeus_eros_207_1_737ce2ffc620e0dded526ad2c974b040.png" alt="Narguile Zeus - Eros" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_zeus_eros_207_1_737ce2ffc620e0dded526ad2c974b040.png')">
+        <h3>Narguile Zeus - Eros</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_mr_baba_cod_mb252_1_20251022122345_31c3110a6420.png" alt="Narguile Mr Baba Thunder Bolt Mb252" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_mr_baba_cod_mb252_1_20251022122345_31c3110a6420.png')">
+        <h3>Narguile Mr Baba Thunder Bolt Mb252</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_mr_baba_cod_mb250_1_20251022122205_22d28a54b225.png" alt="Narguile Mr Baba Black Lotus Mb250" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_mr_baba_cod_mb250_1_20251022122205_22d28a54b225.png')">
+        <h3>Narguile Mr Baba Black Lotus Mb250</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_mr_baba_cod_at064_1_20251003134843_9eb34c30ed99.jpg" alt="Narguile Mr Baba Motorcicle" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_mr_baba_cod_at064_1_20251003134843_9eb34c30ed99.jpg')">
+        <h3>Narguile Mr Baba Motorcicle</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_joy_vegas_1367_1_dca7612b5c111b32ae0fe5a1f8de2c0a.png" alt="Narguile Joy Vegas" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_narguile_joy_vegas_1367_1_dca7612b5c111b32ae0fe5a1f8de2c0a.png')">
+        <h3>Narguile Joy Vegas</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      </div>
+    </div>
+    <div class="painel" id="painel-2" style="display:none;">
+      <div class="grid">
+      <div class="card" data-preco="34.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_vgod_alexandria_625_1_d51d3543371c27c4e68efb7d91e10420.png" alt="Vaso Vgod Alexandria 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_vgod_alexandria_625_1_d51d3543371c27c4e68efb7d91e10420.png')">
+        <h3>Vaso Vgod Alexandria 26cm</h3>
+        <p class="preco">R$ 34,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="39.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_california_789_1_4b457ed4e454b346d4a47aa0c54e93cf.png" alt="Vaso de Reposição para Narguile Califórnia" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_california_789_1_4b457ed4e454b346d4a47aa0c54e93cf.png')">
+        <h3>Vaso de Reposição para Narguile Califórnia</h3>
+        <p class="preco">R$ 39,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="105.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_narguile_dubai_diamond_26cm_1_20260519134323_993275925bb8.jpg" alt="Vaso Narguile Dubai Diamond 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_narguile_dubai_diamond_26cm_1_20260519134323_993275925bb8.jpg')">
+        <h3>Vaso Narguile Dubai Diamond 26cm</h3>
+        <p class="preco">R$ 105,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="189.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_miid_769_1_ad873c3ac035da99bd129454d0ed99bf.png" alt="Vaso Candle para Narguile Miid Sultan Original" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_miid_769_1_ad873c3ac035da99bd129454d0ed99bf.png')">
+        <h3>Vaso Candle para Narguile Miid Sultan Original</h3>
+        <p class="preco">R$ 189,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="25.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mdi_15_cm_765_1_aee717d460f7d3c327b395608ac5c9ed.png" alt="Vaso para Narguile MDI 14cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mdi_15_cm_765_1_aee717d460f7d3c327b395608ac5c9ed.png')">
+        <h3>Vaso para Narguile MDI 14cm</h3>
+        <p class="preco">R$ 25,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="29.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_de_narguile_elegancy_14cm_1573_1_172ab19fdcf3c013b8b25ee7b6ce7c66.png" alt="Vaso Elegancy 14cm para Narguile Vidro Decorado Luxo" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_de_narguile_elegancy_14cm_1573_1_172ab19fdcf3c013b8b25ee7b6ce7c66.png')">
+        <h3>Vaso Elegancy 14cm para Narguile Vidro Decorado Luxo</h3>
+        <p class="preco">R$ 29,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="99.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_lumini_maxx_1517_1_82e054327624fb6d257eba5543801948.png" alt="Vaso Lumini Maxx" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_lumini_maxx_1517_1_82e054327624fb6d257eba5543801948.png')">
+        <h3>Vaso Lumini Maxx</h3>
+        <p class="preco">R$ 99,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="74.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_rigado_30cm_1_20260202134111_27af0f3f1da3.jpg" alt="Vaso Rigado 30cm para Narguile" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_rigado_30cm_1_20260202134111_27af0f3f1da3.jpg')">
+        <h3>Vaso Rigado 30cm para Narguile</h3>
+        <p class="preco">R$ 74,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="14.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_istambul_vgod_13_5cm_785_1_fca3924c34e5608ab8c8a0f4b6cff497.png" alt="Vaso de Narguile Istambul V-God 13,5cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_istambul_vgod_13_5cm_785_1_fca3924c34e5608ab8c8a0f4b6cff497.png')">
+        <h3>Vaso de Narguile Istambul V-God 13,5cm</h3>
+        <p class="preco">R$ 14,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="17.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_canelado_nick_14cm_1_20260703100327_2065bead1b62.jpeg" alt="Vaso Canelado Nick 14cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_canelado_nick_14cm_1_20260703100327_2065bead1b62.jpeg')">
+        <h3>Vaso Canelado Nick 14cm</h3>
+        <p class="preco">R$ 17,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="99.90">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_nuts_zenith_1231_1_9c2657cdb56bc153d11c5f81a25b8d12.png" alt="Vaso Nuts  Zenith" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_nuts_zenith_1231_1_9c2657cdb56bc153d11c5f81a25b8d12.png')">
+        <h3>Vaso Nuts  Zenith</h3>
+        <p class="preco">R$ 99,90</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="139.08">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_future_1127_1_965d4a36b7b52e75666d3b82af338b33.png" alt="Vaso Amazon Future" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_future_1127_1_965d4a36b7b52e75666d3b82af338b33.png')">
+        <h3>Vaso Amazon Future</h3>
+        <p class="preco">R$ 139,08</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="21.04">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_duo_color_14cm_para_narguile_em_vidro_1_20260120165142_32df93384be2.jpg" alt="Vaso Caneado Duo Color 14cm para Narguile em Vidro Amarelo/Vermelho" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_duo_color_14cm_para_narguile_em_vidro_1_20260120165142_32df93384be2.jpg')">
+        <h3>Vaso Caneado Duo Color 14cm para Narguile em Vidro Amarelo/Vermelho</h3>
+        <p class="preco">R$ 21,04</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="15.91">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_nick_14cm_verde_1_20260703121227_38d09cb90e36.jpeg" alt="Vaso para Narguile Nick 14cm Verde" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_nick_14cm_verde_1_20260703121227_38d09cb90e36.jpeg')">
+        <h3>Vaso para Narguile Nick 14cm Verde</h3>
+        <p class="preco">R$ 15,91</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="139.08">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_bless_252_lamp_26cm_757_1_ee38e3d45d60f724726fcf56d393df5f.png" alt="Vaso Bless 252 Lamp 26CM" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_bless_252_lamp_26cm_757_1_ee38e3d45d60f724726fcf56d393df5f.png')">
+        <h3>Vaso Bless 252 Lamp 26CM</h3>
+        <p class="preco">R$ 139,08</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="55.05">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_md_little_curve_14cm_33x4_569_1_b5deefeb92e9e26bf437d370b762882b.png" alt="Vaso MD little curve 14CM 33x4" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_md_little_curve_14cm_33x4_569_1_b5deefeb92e9e26bf437d370b762882b.png')">
+        <h3>Vaso MD little curve 14CM 33x4</h3>
+        <p class="preco">R$ 55,05</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="85.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_preto_81119_1_20260512093857_db4653f060bb.jpg" alt="Vaso para Narguile Mega Aladdin Dubai Preto 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_preto_81119_1_20260512093857_db4653f060bb.jpg')">
+        <h3>Vaso para Narguile Mega Aladdin Dubai Preto 26cm</h3>
+        <p class="preco">R$ 85,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="159.08">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_bless_sino_30cm_1565_1_3ec60d7392795c4e4760954f22ac9752.png" alt="Vaso Bless Sino 30CM" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_bless_sino_30cm_1565_1_3ec60d7392795c4e4760954f22ac9752.png')">
+        <h3>Vaso Bless Sino 30CM</h3>
+        <p class="preco">R$ 159,08</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="154.85">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_preto_26cm_1_20260513142040_b1625cf719ec.jpg" alt="Vaso para Narguile Gold Aladdin Dubai Preto 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_preto_26cm_1_20260513142040_b1625cf719ec.jpg')">
+        <h3>Vaso para Narguile Gold Aladdin Dubai Preto 26cm</h3>
+        <p class="preco">R$ 154,85</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="154.85">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_branco_26cm_1_20260513141833_2310560189f2.jpg" alt="Vaso para Narguile Gold Aladdin Dubai Branco 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_branco_26cm_1_20260513141833_2310560189f2.jpg')">
+        <h3>Vaso para Narguile Gold Aladdin Dubai Branco 26cm</h3>
+        <p class="preco">R$ 154,85</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="79.04">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_sultan_temple_1_20260608090437_65a85455df4a.png" alt="Vaso Reposição Sultan Temple Original" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_sultan_temple_1_20260608090437_65a85455df4a.png')">
+        <h3>Vaso Reposição Sultan Temple Original</h3>
+        <p class="preco">R$ 79,04</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="154.85">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_verde_26cm_1_20260513142234_0042b6e2ae39.jpg" alt="Vaso para Narguile Gold Aladdin Dubai Verde 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_verde_26cm_1_20260513142234_0042b6e2ae39.jpg')">
+        <h3>Vaso para Narguile Gold Aladdin Dubai Verde 26cm</h3>
+        <p class="preco">R$ 154,85</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="85.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_fum_81120_1_20260512111611_0663360228fe.jpeg" alt="Vaso para Narguile Mega Aladdin Dubai Fumê 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_fum_81120_1_20260512111611_0663360228fe.jpeg')">
+        <h3>Vaso para Narguile Mega Aladdin Dubai Fumê 26cm</h3>
+        <p class="preco">R$ 85,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="115.80">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_moscow_by_lk_1_20260518135615_bf25fea63bbd.png" alt="Vaso Moscow By LK" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_moscow_by_lk_1_20260518135615_bf25fea63bbd.png')">
+        <h3>Vaso Moscow By LK</h3>
+        <p class="preco">R$ 115,80</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="154.85">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_transparente_1_20260513142203_fbc3465528d9.jpg" alt="Vaso para Narguile Gold Aladdin Dubai Transparente 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_transparente_1_20260513142203_fbc3465528d9.jpg')">
+        <h3>Vaso para Narguile Gold Aladdin Dubai Transparente 26cm</h3>
+        <p class="preco">R$ 154,85</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="154.85">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_rosa_26cm_1_20260513142126_55dc683ee7bb.jpg" alt="Vaso para Narguile Gold Aladdin Dubai Rosa 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_rosa_26cm_1_20260513142126_55dc683ee7bb.jpg')">
+        <h3>Vaso para Narguile Gold Aladdin Dubai Rosa 26cm</h3>
+        <p class="preco">R$ 154,85</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="154.85">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_fum_26cm_1_20260513141947_ccff6ff55ed8.jpg" alt="Vaso para Narguile Gold Aladdin Dubai Fumê 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_fum_26cm_1_20260513141947_ccff6ff55ed8.jpg')">
+        <h3>Vaso para Narguile Gold Aladdin Dubai Fumê 26cm</h3>
+        <p class="preco">R$ 154,85</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="154.85">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_azul_26cm_1_20260513141741_d1c6caeed1f1.jpg" alt="Vaso para Narguile Gold Aladdin Dubai Azul 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_azul_26cm_1_20260513141741_d1c6caeed1f1.jpg')">
+        <h3>Vaso para Narguile Gold Aladdin Dubai Azul 26cm</h3>
+        <p class="preco">R$ 154,85</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="85.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_vermelho_81122_1_20260512094153_47ef33899a66.jpg" alt="Vaso para Narguile Mega Aladdin Dubai Vermelho 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_vermelho_81122_1_20260512094153_47ef33899a66.jpg')">
+        <h3>Vaso para Narguile Mega Aladdin Dubai Vermelho 26cm</h3>
+        <p class="preco">R$ 85,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="85.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_verde_81121_1_20260512105746_747502103639.jpeg" alt="Vaso para Narguile Mega Aladdin Dubai Verde 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_verde_81121_1_20260512105746_747502103639.jpeg')">
+        <h3>Vaso para Narguile Mega Aladdin Dubai Verde 26cm</h3>
+        <p class="preco">R$ 85,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="154.85">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_vermelho_26c_1_20260513142310_668cd45d1aa5.jpg" alt="Vaso para Narguile Gold Aladdin Dubai Vermelho 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_gold_aladdin_dubai_vermelho_26c_1_20260513142310_668cd45d1aa5.jpg')">
+        <h3>Vaso para Narguile Gold Aladdin Dubai Vermelho 26cm</h3>
+        <p class="preco">R$ 154,85</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="85.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_transparente_81117_1_20260512111642_af38f686dd6a.jpeg" alt="Vaso para Narguile Mega Aladdin Dubai Transparente 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_transparente_81117_1_20260512111642_af38f686dd6a.jpeg')">
+        <h3>Vaso para Narguile Mega Aladdin Dubai Transparente 26cm</h3>
+        <p class="preco">R$ 85,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="85.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_rosa_81118_1_20260512094033_b7147dfb2123.jpg" alt="Vaso para Narguile Mega Aladdin Dubai Rosa 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_rosa_81118_1_20260512094033_b7147dfb2123.jpg')">
+        <h3>Vaso para Narguile Mega Aladdin Dubai Rosa 26cm</h3>
+        <p class="preco">R$ 85,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="85.00">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_azul_81123_1_20260512094231_581590e7d154.jpg" alt="Vaso para Narguile Mega Aladdin Dubai Azul 26cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_mega_aladdin_ibra_azul_81123_1_20260512094231_581590e7d154.jpg')">
+        <h3>Vaso para Narguile Mega Aladdin Dubai Azul 26cm</h3>
+        <p class="preco">R$ 85,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="49.00">
+        <img src="https://images.tcdn.com.br/files/1425881/themes/21/img/empty.png?b2859c8b5ac6db574d13c92d07d2bda3" alt="Vaso Reposição para Narguile Egipcio Dubai" onclick="abrirImagem('https://images.tcdn.com.br/files/1425881/themes/21/img/empty.png?b2859c8b5ac6db574d13c92d07d2bda3')">
+        <h3>Vaso Reposição para Narguile Egipcio Dubai</h3>
+        <p class="preco">R$ 49,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card" data-preco="49.00">
+        <img src="https://images.tcdn.com.br/files/1425881/themes/21/img/empty.png?b2859c8b5ac6db574d13c92d07d2bda3" alt="Vaso Reposição Narguile Inox Dubai" onclick="abrirImagem('https://images.tcdn.com.br/files/1425881/themes/21/img/empty.png?b2859c8b5ac6db574d13c92d07d2bda3')">
+        <h3>Vaso Reposição Narguile Inox Dubai</h3>
+        <p class="preco">R$ 49,00</p>
+        <p class="preco-novo"></p>
+        <span class="status ok">Em estoque</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_simples_king_14cm_653_1_46c7ef2aa83bd30baad07ceae7edac34.png" alt="Vaso Simples King 14cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_simples_king_14cm_653_1_46c7ef2aa83bd30baad07ceae7edac34.png')">
+        <h3>Vaso Simples King 14cm</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_nick_14cm_transparente_1_20260128131715_4a2c85fab144.jpg" alt="Vaso para Narguile Nick 14cm Transparente" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_nick_14cm_transparente_1_20260128131715_4a2c85fab144.jpg')">
+        <h3>Vaso para Narguile Nick 14cm Transparente</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_caixa_com_4_vasos_nick_14cm_transparente_2649_1_2a57e43c19ca0eff591ab6a4e7c837df.jpg" alt="Caixa com 4 Vasos Nick 14cm Transparente" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_caixa_com_4_vasos_nick_14cm_transparente_2649_1_2a57e43c19ca0eff591ab6a4e7c837df.jpg')">
+        <h3>Caixa com 4 Vasos Nick 14cm Transparente</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_duo_color_14cm_para_narguile_em_vidro_1_20260120165250_75f8c7d7b254.jpg" alt="Vaso Caneado Duo Color 14cm para Narguile em Vidro Amarelo/Fumê" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_duo_color_14cm_para_narguile_em_vidro_1_20260120165250_75f8c7d7b254.jpg')">
+        <h3>Vaso Caneado Duo Color 14cm para Narguile em Vidro Amarelo/Fumê</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_rigado_30cm_669_4_eaa60cfcd7553cdffa5309106ad43285.png" alt="Vaso Rigado Transparente 30cm com Bocal Colorido" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_rigado_30cm_669_4_eaa60cfcd7553cdffa5309106ad43285.png')">
+        <h3>Vaso Rigado Transparente 30cm com Bocal Colorido</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_14cm_lils_para_narguile_em_vidro_1_20260120165623_7b945bfa1bc6.jpeg" alt="Vaso Caneado 14cm Lilás para Narguile em Vidro" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_14cm_lils_para_narguile_em_vidro_1_20260120165623_7b945bfa1bc6.jpeg')">
+        <h3>Vaso Caneado 14cm Lilás para Narguile em Vidro</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_triton_viper_1_20260123111603_7ec0ddff99ad.png" alt="Vaso Reposição Triton Viper" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_triton_viper_1_20260123111603_7ec0ddff99ad.png')">
+        <h3>Vaso Reposição Triton Viper</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_simples_king_duo_color_14cm_581_1_27acaf24be0cfd17c46f5ce93cf82040.png" alt="Vaso Simples King Duo Color 14cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_simples_king_duo_color_14cm_581_1_27acaf24be0cfd17c46f5ce93cf82040.png')">
+        <h3>Vaso Simples King Duo Color 14cm</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_14cm_roxo_para_narguile_em_vidro_1_20260120165531_ab45e928775e.jpeg" alt="Vaso Caneado 14cm Roxo para Narguile em Vidro" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_14cm_roxo_para_narguile_em_vidro_1_20260120165531_ab45e928775e.jpeg')">
+        <h3>Vaso Caneado 14cm Roxo para Narguile em Vidro</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_14cm_amarelo_para_narguile_em_vidro_1_20260120165419_b94db1509b2d.jpeg" alt="Vaso Caneado 14cm Amarelo para Narguile em Vidro" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_14cm_amarelo_para_narguile_em_vidro_1_20260120165419_b94db1509b2d.jpeg')">
+        <h3>Vaso Caneado 14cm Amarelo para Narguile em Vidro</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_14cm_rosa_para_narguile_em_vidro_1_20260120165457_6cab4b4986ae.jpeg" alt="Vaso Caneado 14cm Rosa para Narguile em Vidro" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_caneado_14cm_rosa_para_narguile_em_vidro_1_20260120165457_6cab4b4986ae.jpeg')">
+        <h3>Vaso Caneado 14cm Rosa para Narguile em Vidro</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_abstrato_14cm_roxo_com_lils_1_20260120170201_4b9be8394daf.jpeg" alt="Vaso para Narguile Abstrato 14cm Roxo com Lilás" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_abstrato_14cm_roxo_com_lils_1_20260120170201_4b9be8394daf.jpeg')">
+        <h3>Vaso para Narguile Abstrato 14cm Roxo com Lilás</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_abstrato_14cm_pink_1_20260120170126_b9953bcec20f.jpeg" alt="Vaso para Narguile Abstrato 14cm Pink" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_abstrato_14cm_pink_1_20260120170126_b9953bcec20f.jpeg')">
+        <h3>Vaso para Narguile Abstrato 14cm Pink</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_abstrato_14cm_roxo_1_20260120170050_6e7ad3dc0720.jpeg" alt="Vaso para Narguile Abstrato 14cm Roxo" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_para_narguile_abstrato_14cm_roxo_1_20260120170050_6e7ad3dc0720.jpeg')">
+        <h3>Vaso para Narguile Abstrato 14cm Roxo</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_styx_jeschken_azul_26cm_vidro_premium_1_20251202140832_4bd0ec8c8fea.jpg" alt="Vaso Styx Jeschken Azul 26cm Vidro Premium" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_styx_jeschken_azul_26cm_vidro_premium_1_20251202140832_4bd0ec8c8fea.jpg')">
+        <h3>Vaso Styx Jeschken Azul 26cm Vidro Premium</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      <div class="card indisponivel">
+        <img src="https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_bless_252_lamp_30cm_761_1_ee38e3d45d60f724726fcf56d393df5f.png" alt="Vaso Bless 252 Lamp 30cm" onclick="abrirImagem('https://images.tcdn.com.br/img/img_prod/1425881/180_vaso_bless_252_lamp_30cm_761_1_ee38e3d45d60f724726fcf56d393df5f.png')">
+        <h3>Vaso Bless 252 Lamp 30cm</h3>
+        <p class="preco">Indisponível</p>
+        
+        <span class="status esgotado">Esgotado</span>
+      </div>
+      </div>
+    </div>
+
+  <div class="overlay" id="overlay" onclick="fecharImagem()">
+    <span class="fechar">&times;</span>
+    <img id="overlayImg" src="" alt="">
+  </div>
+
+  <script>
+    function abrirAba(indice, botao) {
+      document.querySelectorAll('.painel').forEach(function(p) { p.style.display = 'none'; });
+      document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('ativo'); });
+      document.getElementById('painel-' + indice).style.display = '';
+      botao.classList.add('ativo');
+    }
+    function abrirImagem(src) {
+      document.getElementById('overlayImg').src = src;
+      document.getElementById('overlay').classList.add('aberto');
+    }
+    function fecharImagem() {
+      document.getElementById('overlay').classList.remove('aberto');
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') fecharImagem();
+    });
+
+    function atualizarPrecos() {
+      var pct = parseFloat(document.getElementById('percentualInput').value) || 0;
+      document.querySelectorAll('.card[data-preco]').forEach(function(card) {
+        var original = parseFloat(card.getAttribute('data-preco'));
+        var alvo = card.querySelector('.preco-novo');
+        if (!alvo) return;
+        if (pct === 0) {
+          alvo.textContent = '';
+          return;
+        }
+        var novo = original * (1 + pct / 100);
+        alvo.textContent = '+' + pct + '% -> R$ ' + novo.toFixed(2).replace('.', ',');
+      });
+    }
+
+    atualizarPrecos();
+  </script>
+</body>
+</html>
